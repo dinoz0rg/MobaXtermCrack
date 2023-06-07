@@ -58,6 +58,7 @@ class Encoder:
 
         if left_bytes == 0:
             return result
+
         elif left_bytes == 2:
             block = self.VariantBase64ReverseDict[s[4 * blocks_count]]
             block += self.VariantBase64ReverseDict[s[4 * blocks_count + 1]] << 6
@@ -89,9 +90,9 @@ class Encoder:
         return bytes(result)
 
 
-class Keygen:
+class Keygen(Encoder):
     def __init__(self):
-        self.encoder = Encoder()
+        super().__init__()
 
     @staticmethod
     def get_file_version(file_path):
@@ -100,7 +101,6 @@ class Keygen:
             version = info['FileVersionMS']
             major = version >> 16
             minor = version & 0xFFFF
-            build = info['FileVersionLS'] >> 16
             return major, minor
         except Exception as e:
             print(f"Error retrieving file version: {str(e)}")
@@ -112,7 +112,7 @@ class Keygen:
         LicenseString = f'{LicenseType}#{UserName}|{MajorVersion}{MinorVersion}#{Count}#' \
                         f'{MajorVersion}3{MinorVersion}6{MinorVersion}#{0}#{0}#{0}#'
 
-        EncodedLicenseString = self.encoder.VariantBase64Encode(self.encoder.EncryptBytes(0x787, LicenseString.encode())).decode()
+        EncodedLicenseString = self.VariantBase64Encode(self.EncryptBytes(0x787, LicenseString.encode())).decode()
         with zipfile.ZipFile('Custom.mxtpro', 'w') as f:
             f.writestr('Pro.key', data=EncodedLicenseString)
 
@@ -127,7 +127,6 @@ def main():
 
     print('[*] Success!')
     print('[*] File generated: %s' % os.path.join(os.getcwd(), 'Custom.mxtpro'))
-    print('[*] Please move or copy the newly-generated file to MobaXterm\'s installation path.')
     time.sleep(2)
 
 
