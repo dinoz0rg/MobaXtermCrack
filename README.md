@@ -3,7 +3,7 @@
 
 ### How to use
 1. Download the source/executable from this git
-2. Paste main.py to MobaXterm folder
+2. Paste source/executable to MobaXterm folder
 3. Run the program
    - Source: pip3 install win32api, then python3 main.py
    - Executable: no extra steps needed (plug&play)
